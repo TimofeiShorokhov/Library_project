@@ -19,6 +19,9 @@ func Routers() {
 
 	r.HandleFunc("/readers/", controller.SaveReaderController).Methods("POST")
 	r.HandleFunc("/readers", controller.GetReadersController).Methods("GET")
+	r.HandleFunc("/search_reader/{name}", controller.SearchReaderController).Methods("GET")
+
+	r.HandleFunc("/take/", controller.SaveDocumentController).Methods("POST")
 
 	http.Handle("/", r)
 	http.ListenAndServe(":8080", r)
