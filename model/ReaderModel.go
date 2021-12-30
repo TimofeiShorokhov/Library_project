@@ -16,11 +16,14 @@ type Reader struct {
 }
 
 func SaveReader(reader *repo.Reader) {
+
 	if reader.Name == "" || reader.Surname == "" || reader.Email == "" || reader.Birthdate == "" {
 		log.Println("Не все поля заполнены")
 	} else {
 		repo.SaveReaderInDB(*reader)
 	}
+
+	repo.SaveReaderInDB(*reader)
 }
 
 func GetReaders(Readers []repo.Reader) []repo.Reader {

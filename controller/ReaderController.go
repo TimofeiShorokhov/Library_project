@@ -13,21 +13,17 @@ import (
 var Readers []repo.Reader
 
 func SaveReaderController(w http.ResponseWriter, r *http.Request) {
-	var reader repo.Reader
-
 	body, err := ioutil.ReadAll(r.Body)
 	other.CheckErr(err)
 
-	keyVal := make(map[string]string)
-	json.Unmarshal(body, &keyVal)
+	var reader repo.Reader
 
-	reader.Name = keyVal["name"]
-	reader.Surname = keyVal["surname"]
-	reader.Birthdate = keyVal["birthdate"]
-	reader.Email = keyVal["email"]
-	reader.Adress = keyVal["adress"]
+	err = json.Unmarshal(body, &reader)
+
+	other.CheckErr(err)
 
 	model.SaveReader(&reader)
+
 }
 
 func GetReadersController(w http.ResponseWriter, r *http.Request) {

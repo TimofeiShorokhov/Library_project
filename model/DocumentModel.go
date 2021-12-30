@@ -26,10 +26,22 @@ func SaveDocument(document *repo.Document) {
 					log.Println("Необходимо погасить долг прежде, чем брать новую книгу")
 				} else {
 					repo.SaveDocumentInDB(*document)
-					repo.IncreaseBookAvailableInDB(document.BookName)
+					repo.DecreaseBookAvailableInDB(document.BookName)
 					repo.IncreaseReaderDebtInDb(document.ReaderSurname)
 				}
 			}
 		}
 	}
+}
+
+func DeleteDocument(document *repo.Document) {
+	repo.DeleteDocumentInDb(document.ReaderSurname)
+	repo.IncreaseBookAvailableInDB(document.BookName)
+	repo.DecreaseReaderDebtInDb(document.ReaderSurname)
+}
+
+func GetDocuments(Documents []repo.Document) []repo.Document {
+	Documents = []repo.Document{}
+	repo.GetDocumentsFromDB(&Documents)
+	return Documents
 }

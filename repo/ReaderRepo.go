@@ -2,6 +2,7 @@ package repo
 
 import (
 	"Library_project/other"
+	"database/sql"
 	"fmt"
 )
 
@@ -29,6 +30,25 @@ func IncreaseReaderDebtInDb(surname string) {
 	defer db.Close()
 	updDebt := db.QueryRow("UPDATE `readers` set debt = debt+1 WHERE surname = ?", surname)
 	updDebt.Err()
+}
+
+func DecreaseReaderDebtInDb(surname string) {
+	db := other.ConnectDB()
+	defer db.Close()
+	updDebt := db.QueryRow("UPDATE `readers` set debt = debt-1 WHERE surname = ?", surname)
+	updDebt.Err()
+}
+
+func SearchReaderInDb(surname string) bool {
+	db := other.ConnectDB()
+	defer db.Close()
+	var reader Reader
+	resReader := db.QueryRow("Select * from `readers` WHERE surname = ?", surname)
+	errReader := resReader.Scan(&reader.Id, &reader.Name, &reader.Birthdate, &reader.Adress, &reader.Surname, &reader.Email, &reader.Debt)
+	if errReader == sql.ErrNoRows {
+		return false
+	}
+	return true
 }
 
 func GetReaderFromDB(Readers *[]Reader) {

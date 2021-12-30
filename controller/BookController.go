@@ -7,43 +7,23 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"time"
 )
 
 var Books []repo.Book
 
 func SaveBookController(w http.ResponseWriter, r *http.Request) {
-	var book repo.Book
-
 	body, err := ioutil.ReadAll(r.Body)
 	other.CheckErr(err)
 
-	keyVal := make(map[string]string)
+	var book repo.Book
 
-	json.Unmarshal(body, &keyVal)
+	err = json.Unmarshal(body, &book)
+
+	other.CheckErr(err)
+
 	registration := time.Now().Format("2006-01-02")
-	book.BookName = keyVal["book_name"]
-	book.GenreId = keyVal["book_genre_id"]
-	book.AuthorId = keyVal["book_author_id"]
-	year := keyVal["year"]
-	quantity := keyVal["quantity"]
 	book.Registration = registration
-	price := keyVal["book_price"]
-	available := keyVal["available"]
-	book.ImagePath = keyVal["image_path"]
-
-	yearInDb, _ := strconv.Atoi(year)
-	book.Year = uint16(yearInDb)
-
-	quantityInDb, _ := strconv.Atoi(quantity)
-	book.Quantity = uint16(quantityInDb)
-
-	priceInDb, _ := strconv.Atoi(price)
-	book.Price = uint16(priceInDb)
-
-	availableInDb, _ := strconv.Atoi(available)
-	book.Available = uint16(availableInDb)
 
 	model.SaveBook(&book)
 }

@@ -28,11 +28,18 @@ func SaveBookInDB(book Book) {
 	defer ins.Close()
 }
 
-func IncreaseBookAvailableInDB(bookName string) {
+func DecreaseBookAvailableInDB(bookName string) {
 	db := other.ConnectDB()
 	defer db.Close()
 
 	updBook := db.QueryRow("UPDATE `books` SET available=available-1 where book_name = ?", bookName)
+	updBook.Err()
+}
+func IncreaseBookAvailableInDB(bookName string) {
+	db := other.ConnectDB()
+	defer db.Close()
+
+	updBook := db.QueryRow("UPDATE `books` SET available=available+1 where book_name = ?", bookName)
 	updBook.Err()
 }
 
