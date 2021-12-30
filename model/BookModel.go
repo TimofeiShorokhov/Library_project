@@ -1,6 +1,7 @@
 package model
 
 import (
+	"Library_project/other"
 	"Library_project/repo"
 	"fmt"
 	"log"
@@ -26,7 +27,7 @@ func SaveBook(book *repo.Book) {
 	} else {
 		image := book.ImagePath
 		filepath := fmt.Sprintf("./images/book_img/%s.jpg", book.BookName)
-		repo.DownloadFile(filepath, image)
+		other.DownloadFile(filepath, image)
 		book.ImagePath = filepath
 		repo.SaveBookInDB(*book)
 	}

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"Library_project/model"
+	"Library_project/other"
 	"Library_project/repo"
 	"encoding/json"
 	"io/ioutil"
@@ -12,11 +13,11 @@ import (
 
 var Books []repo.Book
 
-func SaveBookController(w http.ResponseWriter, r *http.Request){
+func SaveBookController(w http.ResponseWriter, r *http.Request) {
 	var book repo.Book
 
 	body, err := ioutil.ReadAll(r.Body)
-	repo.CheckErr(err)
+	other.CheckErr(err)
 
 	keyVal := make(map[string]string)
 
@@ -25,7 +26,7 @@ func SaveBookController(w http.ResponseWriter, r *http.Request){
 	book.BookName = keyVal["book_name"]
 	book.GenreId = keyVal["book_genre_id"]
 	book.AuthorId = keyVal["book_author_id"]
-	year :=  keyVal["year"]
+	year := keyVal["year"]
 	quantity := keyVal["quantity"]
 	book.Registration = registration
 	price := keyVal["book_price"]
@@ -47,7 +48,7 @@ func SaveBookController(w http.ResponseWriter, r *http.Request){
 	model.SaveBook(&book)
 }
 
-func GetBooksController(w http.ResponseWriter, r *http.Request){
+func GetBooksController(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	Books = model.GetBooks(Books)
 	json.NewEncoder(w).Encode(Books)
