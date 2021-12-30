@@ -7,16 +7,16 @@ import (
 	"net/http"
 )
 
-func Routers(){
-	r:= mux.NewRouter()
+func Routers() {
+	r := mux.NewRouter()
 	repo.ConnectDB()
 
-	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("img"))))
-	http.Handle("/authorImage/", http.StripPrefix("/authorImage/", http.FileServer(http.Dir("authorImage"))))
+	http.Handle("/images/book_img", http.StripPrefix("/images/", http.FileServer(http.Dir("images"))))
+	http.Handle("/images/author_img/", http.StripPrefix("/authorImage/", http.FileServer(http.Dir("authorImage"))))
 
 	r.HandleFunc("/books/", controller.SaveBookController).Methods("POST")
 	r.HandleFunc("/books", controller.GetBooksController).Methods("GET")
 
-	http.Handle("/",r)
-	http.ListenAndServe(":8080",r)
+	http.Handle("/", r)
+	http.ListenAndServe(":8080", r)
 }
