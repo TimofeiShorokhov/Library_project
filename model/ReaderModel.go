@@ -5,16 +5,6 @@ import (
 	"log"
 )
 
-type Reader struct {
-	Id        uint16 `json:"id"`
-	Name      string `json:"name"`
-	Birthdate string `json:"birthdate"`
-	Adress    string `json:"adress"`
-	Surname   string `json:"surname"`
-	Email     string `json:"email"`
-	Debt      uint16 `json:"debt"`
-}
-
 func SaveReader(reader *repo.Reader) {
 
 	if reader.Name == "" || reader.Surname == "" || reader.Email == "" || reader.Birthdate == "" {

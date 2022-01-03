@@ -13,6 +13,14 @@ type Document struct {
 	Price         float64 `json:"price"`
 	QuantityBook  uint16  `json:"quant"`
 }
+type DocumentForRest struct {
+	DocId         uint16   `json:"doc_id"`
+	ReaderSurname string   `json:"reader_surname"`
+	BookName      []string `json:"book"`
+	Date          string   `json:"date"`
+	Price         float64  `json:"price"`
+	QuantityBook  uint16   `json:"quant"`
+}
 
 func SaveDocumentInDB(document Document) {
 	db := other.ConnectDB()

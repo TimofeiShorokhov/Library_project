@@ -25,17 +25,17 @@ func SaveReaderInDB(reader Reader) {
 	defer ins.Close()
 }
 
-func IncreaseReaderDebtInDb(surname string) {
+func IncreaseReaderDebtInDb(surname string, value uint16) {
 	db := other.ConnectDB()
 	defer db.Close()
-	updDebt := db.QueryRow("UPDATE `readers` set debt = debt+1 WHERE surname = ?", surname)
+	updDebt := db.QueryRow("UPDATE `readers` set debt = debt+? WHERE surname = ?", value, surname)
 	updDebt.Err()
 }
 
-func DecreaseReaderDebtInDb(surname string) {
+func DecreaseReaderDebtInDb(surname string, value uint16) {
 	db := other.ConnectDB()
 	defer db.Close()
-	updDebt := db.QueryRow("UPDATE `readers` set debt = debt-1 WHERE surname = ?", surname)
+	updDebt := db.QueryRow("UPDATE `readers` set debt = debt-? WHERE surname = ?", value, surname)
 	updDebt.Err()
 }
 

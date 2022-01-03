@@ -5,9 +5,9 @@ import (
 	"Library_project/other"
 	"Library_project/repo"
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 )
@@ -19,15 +19,18 @@ func SaveDocumentController(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	other.CheckErr(err)
 
-	var document repo.Document
+	var document repo.DocumentForRest
+	var doc repo.Document
 
 	err = json.Unmarshal(body, &document)
 
 	registration := time.Now().Add(720 * time.Hour).Format("2006-01-02")
 	document.Date = registration
+	model.StructSwitch(&doc, &document)
 
 	other.CheckErr(err)
-	model.SaveDocument(&document)
+	model.SaveDocument(&doc)
+
 }
 
 func DeleteDocumentController(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +44,7 @@ func DeleteDocumentController(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		log.Println("Error")
+		fmt.Fprintf(w, "Error")
 		return
 	}
 }
