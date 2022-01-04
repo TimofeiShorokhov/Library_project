@@ -26,7 +26,7 @@ func SaveDocumentController(w http.ResponseWriter, r *http.Request) {
 
 	registration := time.Now().Add(720 * time.Hour).Format("2006-01-02")
 	document.Date = registration
-	model.StructSwitch(&doc, &document)
+	model.StructSwitchDoc(&doc, &document)
 
 	other.CheckErr(err)
 	model.SaveDocument(&doc)

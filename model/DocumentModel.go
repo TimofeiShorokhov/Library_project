@@ -15,16 +15,15 @@ func Discount(doc *repo.Document) {
 	}
 }
 
-func StructSwitch(doc *repo.Document, docs *repo.DocumentForRest) {
+func StructSwitchDoc(doc *repo.Document, docs *repo.DocumentForRest) {
 	doc.ReaderSurname = docs.ReaderSurname
 	doc.DocId = docs.DocId
 	doc.Date = docs.Date
-	doc.QuantityBook = docs.QuantityBook
-	doc.Price = docs.Price
-	CheckAndChangeInfo(docs, doc)
+
+	CheckAndChangeInfoDoc(docs, doc)
 }
 
-func CheckAndChangeInfo(docs *repo.DocumentForRest, doc *repo.Document) {
+func CheckAndChangeInfoDoc(docs *repo.DocumentForRest, doc *repo.Document) {
 	var Books []repo.Book
 	Books = GetBooks(Books)
 	books := docs.BookName
@@ -37,8 +36,6 @@ func CheckAndChangeInfo(docs *repo.DocumentForRest, doc *repo.Document) {
 				buffer.WriteString(j + ", ")
 				price += i.Price
 				quant = quant + 1
-			} else {
-				log.Println("Something wrong")
 			}
 		}
 	}

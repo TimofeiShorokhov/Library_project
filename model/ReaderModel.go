@@ -12,8 +12,6 @@ func SaveReader(reader *repo.Reader) {
 	} else {
 		repo.SaveReaderInDB(*reader)
 	}
-
-	repo.SaveReaderInDB(*reader)
 }
 
 func GetReaders(Readers []repo.Reader) []repo.Reader {

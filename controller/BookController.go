@@ -16,15 +16,16 @@ func SaveBookController(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	other.CheckErr(err)
 
+	var bookForRest repo.BookForRest
 	var book repo.Book
 
-	err = json.Unmarshal(body, &book)
+	err = json.Unmarshal(body, &bookForRest)
 
 	other.CheckErr(err)
 
 	registration := time.Now().Format("2006-01-02")
-	book.Registration = registration
-
+	bookForRest.Registration = registration
+	model.StructSwitchBook(&book, &bookForRest)
 	model.SaveBook(&book)
 }
 

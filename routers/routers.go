@@ -27,6 +27,9 @@ func Routers() {
 
 	r.HandleFunc("/refund_book/{reader_surname}", controller.DeleteDocumentController).Methods("DELETE")
 
+	r.HandleFunc("/authors/", controller.SaveAuthorController).Methods("POST")
+	r.HandleFunc("/authors", controller.GetAuthorsController).Methods("GET")
+
 	http.Handle("/", r)
 	http.ListenAndServe(":8080", r)
 }
