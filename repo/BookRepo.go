@@ -19,6 +19,19 @@ type Book struct {
 	ImagePath    string `json:"image_path"`
 }
 
+type BookForRest struct {
+	BookId       string   `json:"book_id"`
+	BookName     string   `json:"book_name"`
+	GenreId      []string `json:"book_genre_id"`
+	AuthorId     []string `json:"book_author_id"`
+	Year         uint16   `json:"year"`
+	Quantity     uint16   `json:"quantity"`
+	Available    uint16   `json:"available"`
+	Registration string   `json:"registration"`
+	Price        uint16   `json:"book_price"`
+	ImagePath    string   `json:"image_path"`
+}
+
 func SaveBookInDB(book Book) {
 	db := other.ConnectDB()
 	defer db.Close()
