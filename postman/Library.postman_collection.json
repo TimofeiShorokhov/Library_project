@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"book_name\": \"Книга\",\r\n    \"book_genre_id\": [\"Боевик\",\"Комедия\",\"Сказка\",\"Приключения\",\"авпавы\"],\r\n    \"book_author_id\": [\"Роулинг\",\"Кинг\",\"Каакака\"],\r\n    \"year\" : 1996,\r\n    \"quantity\": 15,\r\n    \"available\": 15,\r\n    \"book_price\": 500,\r\n    \"image_path\": \"https://banana.by/uploads/posts/2010-01/1262638391_79.jpg\"\r\n}",
+					"raw": "{\r\n    \"book_name\": \"Книга\",\r\n    \"book_genre_id\": [\"Боевик\",\"Комедия\",\"Сказка\",\"Приключения\",\"авпавы\"],\r\n    \"book_author_id\": [\"Роулинг\",\"Кинг\",\"Каакака\"],\r\n    \"year\" : 1996,\r\n    \"quantity\": 5,\r\n    \"available\": 5,\r\n    \"book_price\": 500,\r\n    \"image_path\": \"https://banana.by/uploads/posts/2010-01/1262638391_79.jpg\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -42,7 +42,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "127.0.0.1:8080/books",
+					"raw": "127.0.0.1:8080/books?page=2",
 					"host": [
 						"127",
 						"0",
@@ -52,6 +52,12 @@
 					"port": "8080",
 					"path": [
 						"books"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
 					]
 				}
 			},
@@ -94,7 +100,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "127.0.0.1:8080/readers",
+					"raw": "127.0.0.1:8080/readers?page=2",
 					"host": [
 						"127",
 						"0",
@@ -104,6 +110,12 @@
 					"port": "8080",
 					"path": [
 						"readers"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
 					]
 				}
 			},
@@ -132,35 +144,13 @@
 			"response": []
 		},
 		{
-			"name": "GET_search_book",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "127.0.0.1:8080/search_book/Гарри Поттер",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8080",
-					"path": [
-						"search_book",
-						"Гарри Поттер"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "POST_take_book",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"reader_surname\" : \"Михайлов\",\r\n    \"book\" : [\"Хоббит\",\"Властелин Колец\",\"Оно\",\"Гарри Поттер\"]\r\n}",
+					"raw": "{\r\n    \"reader_surname\" : \"Михайлов\",\r\n    \"book_id\" : 11\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -187,10 +177,19 @@
 		{
 			"name": "DELETE_refund_book",
 			"request": {
-				"method": "DELETE",
+				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"instance_id\" : \"11\",\r\n \"damage\" : \"Залитые страницы\",\r\n \"rating\" : 4,\r\n \"instance_price\" : 350,\r\n \"dmg_photo\" : \"ссылка на фото\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "127.0.0.1:8080/refund_book/Михайлов",
+					"raw": "127.0.0.1:8080/refund_book/11",
 					"host": [
 						"127",
 						"0",
@@ -200,7 +199,7 @@
 					"port": "8080",
 					"path": [
 						"refund_book",
-						"Михайлов"
+						"11"
 					]
 				}
 			},
@@ -255,6 +254,66 @@
 					"port": "8080",
 					"path": [
 						"authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET_documents",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8080/documents",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"documents"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET_instances_with_pages",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8080/instances?page=3",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"instances"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "3"
+						}
 					]
 				}
 			},
