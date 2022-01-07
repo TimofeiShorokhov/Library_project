@@ -32,5 +32,13 @@ func SaveBookController(w http.ResponseWriter, r *http.Request) {
 func GetBooksController(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	Books = model.GetBooks(Books)
+	body, err := ioutil.ReadAll(r.Body)
+	other.CheckErr(err)
+	page := r.URL.Query().Get("page")
+	err = json.Unmarshal(body, page)
+	if page == "" {
+		page = "1"
+	}
+	Books = model.GetBooksWithPage(Books, page)
 	json.NewEncoder(w).Encode(Books)
 }

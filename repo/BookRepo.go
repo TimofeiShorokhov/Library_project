@@ -4,6 +4,7 @@ import (
 	"Library_project/other"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"strconv"
 )
 
 type Book struct {
@@ -61,6 +62,21 @@ func GetBooksFromDB(Books *[]Book) {
 	defer db.Close()
 
 	get, err := db.Query("Select * from `books` order by book_name")
+	other.CheckErr(err)
+
+	for get.Next() {
+		var book Book
+		err = get.Scan(&book.BookId, &book.BookName, &book.GenreId, &book.AuthorId, &book.Year, &book.Quantity, &book.Available, &book.Registration, &book.Price, &book.ImagePath)
+		other.CheckErr(err)
+		*Books = append(*Books, book)
+	}
+}
+
+func GetBooksFromDBWithPages(Books *[]Book, page string) {
+	db := other.ConnectDB()
+	defer db.Close()
+	p, _ := strconv.Atoi(page)
+	get, err := db.Query(fmt.Sprintf("Select * from `books` order by book_name LIMIT 5 OFFSET %d", (p-1)*5))
 	other.CheckErr(err)
 
 	for get.Next() {

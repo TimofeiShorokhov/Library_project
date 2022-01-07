@@ -8,34 +8,36 @@ import (
 type Document struct {
 	DocId         uint16  `json:"doc_id"`
 	ReaderSurname string  `json:"reader_surname"`
-	BookName      string  `json:"book"`
+	BookId        string  `json:"book_id"`
+	BookName      string  `json:"book_name"`
 	Date          string  `json:"date"`
 	Price         float64 `json:"price"`
 	QuantityBook  uint16  `json:"quant"`
 }
 type DocumentForRest struct {
-	DocId         uint16   `json:"doc_id"`
-	ReaderSurname string   `json:"reader_surname"`
-	BookName      []string `json:"book"`
-	Date          string   `json:"date"`
-	Price         float64  `json:"price"`
-	QuantityBook  uint16   `json:"quant"`
+	DocId         uint16  `json:"doc_id"`
+	ReaderSurname string  `json:"reader_surname"`
+	BookId        uint16  `json:"book_id"`
+	BookName      string  `json:"book_name"`
+	Date          string  `json:"date"`
+	Price         float64 `json:"price"`
+	QuantityBook  uint16  `json:"quant"`
 }
 
 func SaveDocumentInDB(document Document) {
 	db := other.ConnectDB()
 	defer db.Close()
 
-	ins, err := db.Query(fmt.Sprintf("INSERT INTO `documents` (`reader_surname`,`book`,`date`,`price`, `quant`) VALUES ('%s','%s','%s','%f','%d')", document.ReaderSurname, document.BookName, document.Date, document.Price, document.QuantityBook))
+	ins, err := db.Query(fmt.Sprintf("INSERT INTO `documents` (`reader_surname`,`book_id`,`book_name`,`date`,`price`, `quant`) VALUES ('%s','%s','%s','%s','%f','%d')", document.ReaderSurname, document.BookId, document.BookName, document.Date, document.Price, document.QuantityBook))
 	other.CheckErr(err)
 	defer ins.Close()
 }
 
-func DeleteDocumentInDb(surname string) {
+func DeleteDocumentInDb(id string) {
 	db := other.ConnectDB()
 	defer db.Close()
 
-	updDoc := db.QueryRow("DELETE  from `documents` where reader_surname = ?", surname)
+	updDoc := db.QueryRow("DELETE  from `documents` where book_id = ?", id)
 	updDoc.Err()
 }
 
@@ -48,7 +50,7 @@ func GetDocumentsFromDB(Documents *[]Document) {
 
 	for get.Next() {
 		var document Document
-		err = get.Scan(&document.DocId, &document.ReaderSurname, &document.BookName, &document.Date, &document.Price, &document.QuantityBook)
+		err = get.Scan(&document.DocId, &document.ReaderSurname, &document.BookId, &document.BookName, &document.Date, &document.Price, &document.QuantityBook)
 		other.CheckErr(err)
 		*Documents = append(*Documents, document)
 	}

@@ -28,7 +28,14 @@ func SaveReaderController(w http.ResponseWriter, r *http.Request) {
 
 func GetReadersController(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	Readers = model.GetReaders(Readers)
+	body, err := ioutil.ReadAll(r.Body)
+	other.CheckErr(err)
+	page := r.URL.Query().Get("page")
+	err = json.Unmarshal(body, page)
+	if page == "" {
+		page = "1"
+	}
+	Readers = model.GetReadersWithPage(Readers, page)
 	json.NewEncoder(w).Encode(Readers)
 }
 

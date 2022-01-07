@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"strings"
 )
 
 func StructSwitchBook(book *repo.Book, bookForRest *repo.BookForRest) {
@@ -45,8 +46,13 @@ func CheckAndChangeInfoBook(book *repo.Book, bookForRest *repo.BookForRest) {
 			}
 		}
 	}
-	book.AuthorId = bufferAuth.String()
-	book.GenreId = bufferGenr.String()
+	a := bufferAuth.String()
+	b := a[:len(a)-2]
+	book.AuthorId = b
+
+	c := bufferGenr.String()
+	h := c[:len(c)-2]
+	book.GenreId = h
 }
 
 func SaveBook(book *repo.Book) {
@@ -56,15 +62,23 @@ func SaveBook(book *repo.Book) {
 		log.Println(book)
 	} else {
 		image := book.ImagePath
-		filepath := fmt.Sprintf("./images/book_img/%s.jpg", book.BookName)
+		out := strings.ReplaceAll(book.BookName, " ", "_")
+		filepath := fmt.Sprintf("./images/book_img/%s.jpg", out)
 		other.DownloadFile(filepath, image)
 		book.ImagePath = filepath
 		repo.SaveBookInDB(*book)
+		repo.SaveInstanceInDB(*book)
 	}
 }
 
 func GetBooks(Books []repo.Book) []repo.Book {
 	Books = []repo.Book{}
 	repo.GetBooksFromDB(&Books)
+	return Books
+}
+
+func GetBooksWithPage(Books []repo.Book, page string) []repo.Book {
+	Books = []repo.Book{}
+	repo.GetBooksFromDBWithPages(&Books, page)
 	return Books
 }
