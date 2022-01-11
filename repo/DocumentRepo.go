@@ -7,8 +7,8 @@ import (
 
 type Document struct {
 	DocId         uint16  `json:"doc_id"`
-	ReaderSurname string  `json:"reader_surname"`
-	BookId        string  `json:"book_id"`
+	ReaderSurname string  `json:"reader_surname" valid:"required"`
+	BookId        uint16  `json:"book_id" valid:"required,numeric"`
 	BookName      string  `json:"book_name"`
 	Date          string  `json:"date"`
 	Price         float64 `json:"price"`
@@ -28,12 +28,12 @@ func SaveDocumentInDB(document Document) {
 	db := other.ConnectDB()
 	defer db.Close()
 
-	ins, err := db.Query(fmt.Sprintf("INSERT INTO `documents` (`reader_surname`,`book_id`,`book_name`,`date`,`price`, `quant`) VALUES ('%s','%s','%s','%s','%f','%d')", document.ReaderSurname, document.BookId, document.BookName, document.Date, document.Price, document.QuantityBook))
+	ins, err := db.Query(fmt.Sprintf("INSERT INTO `documents` (`reader_surname`,`book_id`,`book_name`,`date`,`price`, `quant`) VALUES ('%s','%d','%s','%s','%f','%d')", document.ReaderSurname, document.BookId, document.BookName, document.Date, document.Price, document.QuantityBook))
 	other.CheckErr(err)
 	defer ins.Close()
 }
 
-func DeleteDocumentInDb(id string) {
+func DeleteDocumentInDb(id uint16) {
 	db := other.ConnectDB()
 	defer db.Close()
 

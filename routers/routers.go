@@ -16,6 +16,7 @@ func Routers() {
 
 	r.HandleFunc("/books/", controller.SaveBookController).Methods("POST")
 	r.HandleFunc("/books", controller.GetBooksController).Methods("GET")
+	r.HandleFunc("/booksW", controller.GetBooksWithAuthorsController).Methods("GET")
 
 	r.HandleFunc("/readers/", controller.SaveReaderController).Methods("POST")
 	r.HandleFunc("/readers", controller.GetReadersController).Methods("GET")

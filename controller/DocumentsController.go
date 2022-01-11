@@ -5,10 +5,10 @@ import (
 	"Library_project/other"
 	"Library_project/repo"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -27,13 +27,8 @@ func SaveDocumentController(w http.ResponseWriter, r *http.Request) {
 	registration := time.Now().Add(720 * time.Hour).Format("2006-01-02")
 	document.Date = registration
 	model.StructSwitchDoc(&doc, &document)
-	if doc.BookId == "" {
-		return
-	} else {
-
-		other.CheckErr(err)
-		model.SaveDocument(&doc)
-	}
+	other.CheckErr(err)
+	model.SaveDocument(&doc)
 
 }
 
@@ -55,14 +50,17 @@ func DeleteDocumentController(w http.ResponseWriter, r *http.Request) {
 		t1 := i.Date
 		dt1, _ := time.Parse("2006-01-02", t1)
 		t2 := time.Now()
-		if i.BookId == params["instance_id"] {
+		str, _ := strconv.Atoi(params["instance_id"])
+		if i.BookId == uint16(str) {
+			instance.InstanceName = i.BookName
 			model.DeleteDocument(&i, &instance)
 			if t2.After(dt1) {
 				days := (t2.Sub(dt1).Hours()) / 24
 				penny = int(instance.FinalPrice * (0.01) * (days))
-				fmt.Fprintf(w, "'%s' вернул(а) '%s', стоимость составила: '%d'. Просрочка составила '%d' дней", i.ReaderSurname, i.BookName, penny, int(days))
+				instance.FinalPrice = float64(penny)
+				json.NewEncoder(w).Encode(instance)
 			} else if t2.Before(dt1) {
-				fmt.Fprintf(w, "'%s' вернул(а) '%s', стоимость составила: '%.2f'", i.ReaderSurname, i.BookName, instance.FinalPrice)
+				json.NewEncoder(w).Encode(instance)
 			}
 
 		}

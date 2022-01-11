@@ -9,11 +9,11 @@ import (
 
 type Reader struct {
 	Id        uint16 `json:"id"`
-	Name      string `json:"name"`
-	Birthdate string `json:"birthdate"`
+	Name      string `json:"name" valid:"required"`
+	Surname   string `json:"surname" valid:"required"`
+	Birthdate string `json:"birthdate" valid:"required"`
 	Adress    string `json:"adress"`
-	Surname   string `json:"surname"`
-	Email     string `json:"email"`
+	Email     string `json:"email" valid:"required,email"`
 	Debt      uint16 `json:"debt"`
 }
 

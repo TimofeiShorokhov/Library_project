@@ -3,7 +3,7 @@ package repo
 import "Library_project/other"
 
 type Genre struct {
-	GenreId   string `json:"genre_id"`
+	GenreId   uint16 `json:"genre_id"`
 	GenreName string `json:"book_genre"`
 }
 

@@ -6,9 +6,9 @@ import (
 )
 
 type Author struct {
-	AuthorId    string `json:"author_id"`
-	AuthorName  string `json:"author_name"`
-	AuthorImage string `json:"author_image"`
+	AuthorId    uint16 `json:"author_id"`
+	AuthorName  string `json:"author_name" valid:"required"`
+	AuthorImage string `json:"author_image" valid:"required"`
 }
 
 func GetAuthorsFromDB(Authors *[]Author) {

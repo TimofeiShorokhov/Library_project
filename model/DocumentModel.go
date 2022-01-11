@@ -1,37 +1,13 @@
 package model
 
 import (
+	"Library_project/other"
 	"Library_project/repo"
+	"github.com/asaskevich/govalidator"
 	"log"
-	"strconv"
 	"strings"
 	"time"
 )
-
-func Contains(strs []string, str string) bool {
-	for _, s := range strs {
-		if s == str {
-			return true
-		}
-	}
-	return false
-}
-
-func Dedup(input string) bool {
-	unique := []string{}
-
-	words := strings.Split(input, " ")
-	for _, word := range words {
-		// If we alredy have this word, skip.
-		if Contains(unique, word) {
-			return false
-		}
-
-		unique = append(unique, word)
-	}
-
-	return true
-}
 
 func Discount(doc *repo.Document) {
 	var Readers []repo.Reader
@@ -61,7 +37,7 @@ func CheckAndChangeInfoDoc(docs *repo.DocumentForRest, doc *repo.Document) {
 	Books = GetInstances(Books)
 
 	for _, v := range Books {
-		if v.InstanceId == strconv.Itoa(int(docs.BookId)) {
+		if v.InstanceId == docs.BookId {
 			doc.BookId = v.InstanceId
 			doc.BookName = v.InstanceName
 			doc.Price = float64(v.InstancePrice)
@@ -75,10 +51,14 @@ func SaveDocument(document *repo.Document) {
 	var Readers []repo.Reader
 	var Books []repo.Book
 	var Documents []repo.Document
+	var name string
 
 	Documents = GetDocuments(Documents)
 	Readers = GetReaders(Readers)
 	Books = GetBooks(Books)
+
+	res, err := govalidator.ValidateStruct(document)
+	other.CheckErr(err)
 
 	for _, i := range Documents {
 		if i.ReaderSurname == document.ReaderSurname {
@@ -89,8 +69,8 @@ func SaveDocument(document *repo.Document) {
 		}
 	}
 
-	if document.ReaderSurname == "" {
-		log.Println("Пустые поля")
+	if res != true {
+		log.Println(err)
 	} else if document.QuantityBook > 5 {
 		log.Println("Нельзя брать более 5 книг")
 	} else {
@@ -103,9 +83,11 @@ func SaveDocument(document *repo.Document) {
 					repo.SaveDocumentInDB(*document)
 					for _, i := range Books {
 						if strings.Contains(document.BookName, i.BookName) {
-							repo.DecreaseBookAvailableInDB(i.BookName)
+							name = i.BookName
+
 						}
 					}
+					repo.DecreaseBookAvailableInDB(name)
 					repo.IncreaseReaderDebtInDb(document.ReaderSurname, document.QuantityBook)
 				}
 			}
@@ -117,6 +99,7 @@ func DeleteDocument(document *repo.Document, instance *repo.Instance) {
 	var Books []repo.Book
 	var Documents []repo.Document
 	var Instances []repo.Instance
+	var name string
 
 	Documents = GetDocuments(Documents)
 	Books = GetBooks(Books)
@@ -136,11 +119,12 @@ func DeleteDocument(document *repo.Document, instance *repo.Instance) {
 		for _, v := range Instances {
 			if document.BookId == v.InstanceId {
 				if document.BookName == i.BookName {
-					repo.IncreaseBookAvailableInDB(i.BookName)
+					name = i.BookName
 				}
 			}
 		}
 	}
+	repo.IncreaseBookAvailableInDB(name)
 	repo.DeleteDocumentInDb(instance.InstanceId)
 	repo.DecreaseReaderDebtInDb(document.ReaderSurname)
 }

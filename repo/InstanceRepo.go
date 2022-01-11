@@ -7,7 +7,7 @@ import (
 )
 
 type Instance struct {
-	InstanceId    string  `json:"instance_id"`
+	InstanceId    uint16  `json:"instance_id"`
 	InstanceName  string  `json:"instance_name"`
 	Damage        string  `json:"damage"`
 	InstancePrice uint16  `json:"instance_price"`
