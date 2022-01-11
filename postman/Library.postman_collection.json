@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"book_name\": \"Книга\",\r\n    \"book_genre_id\": [\"Боевик\",\"Комедия\",\"Сказка\",\"Приключения\",\"авпавы\"],\r\n    \"book_author_id\": [\"Роулинг\",\"Кинг\",\"Каакака\"],\r\n    \"year\" : 1996,\r\n    \"quantity\": 15,\r\n    \"available\": 15,\r\n    \"book_price\": 500,\r\n    \"image_path\": \"https://banana.by/uploads/posts/2010-01/1262638391_79.jpg\"\r\n}",
+					"raw": "{\r\n    \"book_id\" : 3,\r\n    \"book_name\": \"Гарри Поттер\",\r\n    \"genre_id\": [2,3,5,6],\r\n    \"author_id\" : [2],\r\n    \"year\" : 1989,\r\n    \"quantity\": 5,\r\n    \"available\": 5,\r\n    \"book_price\": 450,\r\n    \"image_path\": \"https://cdn1.ozone.ru/s3/multimedia-r/6011146059.jpg\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -42,7 +42,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "127.0.0.1:8080/books",
+					"raw": "127.0.0.1:8080/books?page=2",
 					"host": [
 						"127",
 						"0",
@@ -52,6 +52,12 @@
 					"port": "8080",
 					"path": [
 						"books"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
 					]
 				}
 			},
@@ -64,7 +70,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\" : \"Marcus\",\r\n    \"surname\" : \"Rashford\",\r\n    \"birthdate\" : \"1999-12-12\",\r\n    \"email\" : \"rashford@gmail.com\",\r\n    \"adress\" : \"London, UK\"\r\n}",
+					"raw": "{\r\n    \"name\" : \"Marcus\",\r\n    \"surname\" : \"Rashford\",\r\n    \"birthdate\" : \"1999-11-13\",\r\n    \"email\" : \"rashford@gmail.com\",\r\n    \"adress\" : \"London, UK, Brighton street 53\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -94,7 +100,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "127.0.0.1:8080/readers",
+					"raw": "127.0.0.1:8080/readers?page=2",
 					"host": [
 						"127",
 						"0",
@@ -104,6 +110,12 @@
 					"port": "8080",
 					"path": [
 						"readers"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
 					]
 				}
 			},
@@ -132,35 +144,13 @@
 			"response": []
 		},
 		{
-			"name": "GET_search_book",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "127.0.0.1:8080/search_book/Гарри Поттер",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8080",
-					"path": [
-						"search_book",
-						"Гарри Поттер"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "POST_take_book",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"reader_surname\" : \"Михайлов\",\r\n    \"book\" : [\"Хоббит\",\"Властелин Колец\",\"Оно\",\"Гарри Поттер\"]\r\n}",
+					"raw": "{\r\n    \"reader_surname\" : \"Михайлов\",\r\n    \"book_id\" : 275\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -187,10 +177,19 @@
 		{
 			"name": "DELETE_refund_book",
 			"request": {
-				"method": "DELETE",
+				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"instance_id\" : 275,\r\n \"damage\" : \"Помята обложка\",\r\n \"rating\" : 3,\r\n \"instance_price\" : 450,\r\n \"dmg_photo\" : \"ссылка на фото\",\r\n \"final_price\" : 550\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "127.0.0.1:8080/refund_book/Михайлов",
+					"raw": "127.0.0.1:8080/refund_book/275",
 					"host": [
 						"127",
 						"0",
@@ -200,7 +199,7 @@
 					"port": "8080",
 					"path": [
 						"refund_book",
-						"Михайлов"
+						"275"
 					]
 				}
 			},
@@ -255,6 +254,87 @@
 					"port": "8080",
 					"path": [
 						"authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET_documents",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8080/documents",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"documents"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET_instances_with_pages",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "127.0.0.1:8080/instances",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"instances"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET_books_with_authors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8080/booksW?page=2",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"booksW"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
 					]
 				}
 			},

@@ -4,15 +4,16 @@ import (
 	"Library_project/other"
 	"database/sql"
 	"fmt"
+	"strconv"
 )
 
 type Reader struct {
 	Id        uint16 `json:"id"`
-	Name      string `json:"name"`
-	Birthdate string `json:"birthdate"`
+	Name      string `json:"name" valid:"required"`
+	Surname   string `json:"surname" valid:"required"`
+	Birthdate string `json:"birthdate" valid:"required"`
 	Adress    string `json:"adress"`
-	Surname   string `json:"surname"`
-	Email     string `json:"email"`
+	Email     string `json:"email" valid:"required,email"`
 	Debt      uint16 `json:"debt"`
 }
 
@@ -32,10 +33,10 @@ func IncreaseReaderDebtInDb(surname string, value uint16) {
 	updDebt.Err()
 }
 
-func DecreaseReaderDebtInDb(surname string, value uint16) {
+func DecreaseReaderDebtInDb(surname string) {
 	db := other.ConnectDB()
 	defer db.Close()
-	updDebt := db.QueryRow("UPDATE `readers` set debt = debt-? WHERE surname = ?", value, surname)
+	updDebt := db.QueryRow("UPDATE `readers` set debt = debt-1 WHERE surname = ?", surname)
 	updDebt.Err()
 }
 
@@ -56,6 +57,21 @@ func GetReaderFromDB(Readers *[]Reader) {
 	defer db.Close()
 
 	get, err := db.Query("Select * from `readers` order by name")
+	other.CheckErr(err)
+
+	for get.Next() {
+		var reader Reader
+		err = get.Scan(&reader.Id, &reader.Name, &reader.Birthdate, &reader.Adress, &reader.Surname, &reader.Email, &reader.Debt)
+		other.CheckErr(err)
+		*Readers = append(*Readers, reader)
+	}
+}
+
+func GetReaderFromDBWithPages(Readers *[]Reader, page string) {
+	db := other.ConnectDB()
+	defer db.Close()
+	p, _ := strconv.Atoi(page)
+	get, err := db.Query(fmt.Sprintf("Select * from `readers` order by name LIMIT 5 OFFSET %d", (p-1)*5))
 	other.CheckErr(err)
 
 	for get.Next() {
