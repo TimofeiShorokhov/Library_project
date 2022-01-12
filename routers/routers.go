@@ -5,11 +5,17 @@ import (
 	"Library_project/other"
 	"github.com/gorilla/mux"
 	"net/http"
+	"os"
 )
 
 func Routers() {
 	r := mux.NewRouter()
 	other.ConnectDB()
+
+	err := os.Setenv("PORT", ":8080")
+	other.CheckErr(err)
+
+	port := os.Getenv("PORT")
 
 	http.Handle("/book_img/", http.StripPrefix("/book_img/", http.FileServer(http.Dir("./book_img"))))
 	http.Handle("/images/author_img/", http.StripPrefix("/authorImage/", http.FileServer(http.Dir("authorImage"))))
@@ -26,7 +32,6 @@ func Routers() {
 
 	r.HandleFunc("/take/", controller.SaveDocumentController).Methods("POST")
 
-	//	r.HandleFunc("/refund_book/{reader_surname}", controller.DeleteDocumentController).Methods("DELETE")
 	r.HandleFunc("/refund_book/{instance_id}", controller.DeleteDocumentController).Methods("POST")
 
 	r.HandleFunc("/authors/", controller.SaveAuthorController).Methods("POST")
@@ -35,5 +40,5 @@ func Routers() {
 	r.HandleFunc("/instances", controller.GetInstancesController).Methods("GET")
 
 	http.Handle("/", r)
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(port, r)
 }
