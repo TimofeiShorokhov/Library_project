@@ -35,7 +35,18 @@ func CheckErr(err error) {
 }
 
 func ConnectDB() *sql.DB {
-	db, err := sql.Open("mysql", "mysql:@tcp(127.0.0.1:3306)/library")
+
+	err := os.Setenv("DATABASE", "mysql:@tcp(127.0.0.1:3306)/library")
+	CheckErr(err)
+
+	database := os.Getenv("DATABASE")
+
+	err1 := os.Setenv("DRIVER", "mysql")
+	CheckErr(err1)
+
+	driver := os.Getenv("DRIVER")
+
+	db, err := sql.Open(driver, database)
 	CheckErr(err)
 	return db
 }
