@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"Library_project/email"
 	"Library_project/model"
 	"Library_project/other"
 	"Library_project/repo"
@@ -71,4 +72,8 @@ func GetDocumentsController(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	Documents = model.GetDocuments(Documents)
 	json.NewEncoder(w).Encode(Documents)
+}
+
+func CheckDebtController(w http.ResponseWriter, r *http.Request) {
+	email.CheckForSend()
 }

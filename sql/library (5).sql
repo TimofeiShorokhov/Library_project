@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Янв 11 2022 г., 18:27
+-- Время создания: Янв 14 2022 г., 17:03
 -- Версия сервера: 8.0.24
 -- Версия PHP: 7.1.33
 
@@ -76,7 +76,7 @@ CREATE TABLE `books` (
 INSERT INTO `books` (`book_id`, `book_name`, `year`, `quantity`, `available`, `registration`, `book_price`, `Image_path`) VALUES
 (1, 'Колец', 1996, 5, 5, '2022-01-10', 350, './images/book_img/Колец.jpg'),
 (2, 'Оно', 1989, 5, 5, '2022-01-11', 450, './images/book_img/Оно.jpg'),
-(3, 'Гарри Поттер', 1989, 5, 5, '2022-01-11', 450, './images/book_img/Гарри_Поттер.jpg');
+(3, 'Гарри Поттер', 1989, 5, 4, '2022-01-11', 450, './images/book_img/Гарри_Поттер.jpg');
 
 -- --------------------------------------------------------
 
@@ -142,6 +142,13 @@ CREATE TABLE `documents` (
   `quant` int NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 
+--
+-- Дамп данных таблицы `documents`
+--
+
+INSERT INTO `documents` (`id`, `reader_surname`, `book_id`, `book_name`, `date`, `price`, `quant`) VALUES
+(330, 'Шорохов', 275, 'Гарри Поттер', '2021-01-12', 100, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -186,7 +193,7 @@ CREATE TABLE `instances` (
 --
 
 INSERT INTO `instances` (`instance_id`, `instance_name`, `damage`, `instance_price`, `return_date`, `dmg_photo`, `rating`) VALUES
-(275, 'Гарри Поттер', 'Помята обложка', 450, '2022-01-11', 'ссылка на фото', 3),
+(275, 'Гарри Поттер', 'Помята обложка', 450, '2022-01-12', 'ссылка на фото', 3),
 (274, 'Гарри Поттер', 'Нет повреждений', 450, '1999-12-31', 'Книгу еще не брали', 0),
 (273, 'Гарри Поттер', 'Нет повреждений', 450, '1999-12-31', 'Книгу еще не брали', 0),
 (272, 'Гарри Поттер', 'Нет повреждений', 450, '1999-12-31', 'Книгу еще не брали', 0),
@@ -225,9 +232,9 @@ CREATE TABLE `readers` (
 INSERT INTO `readers` (`id`, `name`, `birthdate`, `adress`, `surname`, `email`, `debt`) VALUES
 (1, 'Леонид', '1998-02-13', 'улица Советская', 'Балычев', 'leno@yandex.com', 0),
 (2, 'Евгений', '1987-02-02', 'улица Богдановича', 'Михайлов', 'evg@mail.ru', 0),
-(3, 'Тимофей', '1997-12-17', 'ул Богдановича 78, 439', 'Шорохов', 'limjkeee@mail.ru', 0),
+(3, 'Тимофей', '1997-12-17', 'ул Богдановича 78, 439', 'Шорохов', 'animaster-animaster@mail.ru', 1),
 (4, 'Ксения', '2002-10-01', 'ул Макаенка 12В', 'Лесникова', 'lesnikova@gmail.com', 0),
-(5, 'Егор', '1997-07-23', 'минск', 'Янкин', 'какой-то', 0),
+(5, 'Егор', '1997-07-23', 'минск', 'Янкин', 'yank97@mail.ru', 0),
 (9, 'Владимир', '1967-09-05', 'ул. Мястровская 15А', 'Бодров', 'bodrov@mail.ru', 0);
 
 --
@@ -299,7 +306,7 @@ ALTER TABLE `authors`
 -- AUTO_INCREMENT для таблицы `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=329;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=331;
 
 --
 -- AUTO_INCREMENT для таблицы `instances`
