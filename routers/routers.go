@@ -10,7 +10,6 @@ import (
 
 func Routers() {
 	r := mux.NewRouter()
-	other.ConnectDB()
 
 	err := os.Setenv("PORT", ":8080")
 	other.CheckErr(err)
@@ -39,6 +38,9 @@ func Routers() {
 
 	r.HandleFunc("/instances", controller.GetInstancesController).Methods("GET")
 
+	r.HandleFunc("/email", controller.CheckDebtController)
+
 	http.Handle("/", r)
 	http.ListenAndServe(port, r)
+
 }

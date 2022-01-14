@@ -212,7 +212,12 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"author_name\" : \"Ершов\",\r\n    \"author_image\" : \"https://ds04.infourok.ru/uploads/ex/0c7b/000cb6aa-b9ba4e2d/6/hello_html_m64464be4.jpg\"\r\n}"
+					"raw": "{\r\n    \"author_name\" : \"Ершов\",\r\n    \"author_image\" : \"https://ds04.infourok.ru/uploads/ex/0c7b/000cb6aa-b9ba4e2d/6/hello_html_m64464be4.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "127.0.0.1:8080/authors/",
@@ -335,6 +340,27 @@
 							"key": "page",
 							"value": "2"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Email",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8080/email",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"email"
 					]
 				}
 			},
