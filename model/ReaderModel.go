@@ -20,8 +20,8 @@ func GetReaders(Readers []repo.Reader) []repo.Reader {
 	return Readers
 }
 
-func GetReadersWithPage(Readers []repo.Reader, page string) []repo.Reader {
+func GetReadersWithPage(Readers []repo.Reader, page string, limit string) []repo.Reader {
 	Readers = []repo.Reader{}
-	repo.GetReaderFromDBWithPages(&Readers, page)
+	repo.GetReaderFromDBWithPages(&Readers, page, limit)
 	return Readers
 }

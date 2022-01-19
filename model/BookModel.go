@@ -63,16 +63,19 @@ func SaveBook(bookAuthor *[]repo.BookAuthor, bookGenre *[]repo.BookGenre, book *
 	var oneBookAuthor repo.BookAuthor
 
 	result, err := govalidator.ValidateStruct(book)
-	other.CheckErr(err)
+	log.Println(err)
 
 	if result != true {
 		log.Println(err)
 	} else {
 		image := book.ImagePath
 		out := strings.ReplaceAll(book.BookName, " ", "_")
-		filepath := fmt.Sprintf("./images/book_img/%s.jpg", out)
+		//filepath := fmt.Sprintf("./images/book_img/%s.jpg", out)
+		filepath := fmt.Sprintf("D:/img/%s.jpg", out)
+		filepathDB := fmt.Sprintf("img/%s.jpg", out)
 		other.DownloadFile(filepath, image)
-		book.ImagePath = filepath
+		book.ImagePath = filepathDB
+
 		repo.SaveBookInDB(*book)
 
 		for _, h := range *bookGenre {
@@ -86,6 +89,7 @@ func SaveBook(bookAuthor *[]repo.BookAuthor, bookGenre *[]repo.BookGenre, book *
 		}
 
 		repo.SaveInstanceInDB(*book)
+
 	}
 }
 
@@ -95,16 +99,16 @@ func GetBooks(Books []repo.Book) []repo.Book {
 	return Books
 }
 
-func GetBooksWithPage(Books []repo.Book, page string) []repo.Book {
+func GetBooksWithPage(Books []repo.Book, page string, limit string) []repo.Book {
 	Books = []repo.Book{}
 
-	repo.GetBooksFromDBWithPages(&Books, page)
+	repo.GetBooksFromDBWithPages(&Books, page, limit)
 	return Books
 }
 
-func GetBooksWithAuthorsWithPage(Books []repo.BooksWithAuthors, page string) []repo.BooksWithAuthors {
+func GetBooksWithAuthorsWithPage(Books []repo.BooksWithAuthors, page string, limit string) []repo.BooksWithAuthors {
 	Books = []repo.BooksWithAuthors{}
 
-	repo.GetBooksWithAuthorsFromDBWithPages(&Books, page)
+	repo.GetBooksWithAuthorsFromDBWithPages(&Books, page, limit)
 	return Books
 }

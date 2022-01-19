@@ -28,6 +28,7 @@ func Routers() {
 	r.HandleFunc("/search_reader/{name}", controller.SearchReaderController).Methods("GET")
 
 	r.HandleFunc("/documents", controller.GetDocumentsController).Methods("GET")
+	r.HandleFunc("/documents/{surname}", controller.SearchDocumentController).Methods("GET")
 
 	r.HandleFunc("/take/", controller.SaveDocumentController).Methods("POST")
 
@@ -38,7 +39,9 @@ func Routers() {
 
 	r.HandleFunc("/instances", controller.GetInstancesController).Methods("GET")
 
-	r.HandleFunc("/email", controller.CheckDebtController)
+	r.HandleFunc("/image", controller.RenderFileController).Methods("GET")
+
+	r.HandleFunc("/authors_image", controller.RenderAuthorFileController).Methods("GET")
 
 	http.Handle("/", r)
 	http.ListenAndServe(port, r)

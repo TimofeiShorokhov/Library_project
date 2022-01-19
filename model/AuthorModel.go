@@ -7,9 +7,9 @@ import (
 	"github.com/asaskevich/govalidator"
 )
 
-func GetAuthors(Authors []repo.Author) []repo.Author {
+func GetAuthors(Authors []repo.Author, page string, limit string) []repo.Author {
 	Authors = []repo.Author{}
-	repo.GetAuthorsFromDB(&Authors)
+	repo.GetAuthorsFromDB(&Authors, page, limit)
 	return Authors
 }
 

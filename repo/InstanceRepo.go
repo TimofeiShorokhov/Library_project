@@ -53,11 +53,13 @@ func GetInstancesFromDB(Instances *[]Instance) {
 	}
 }
 
-func GetInstancesFromDBWithPage(Instances *[]Instance, page string) {
+func GetInstancesFromDBWithPage(Instances *[]Instance, page string, limit string) {
 	db := other.ConnectDB()
 	defer db.Close()
 	p, _ := strconv.Atoi(page)
-	get, err := db.Query(fmt.Sprintf("Select * from `instances` order by instance_id LIMIT 5 OFFSET %d", (p-1)*5))
+	pageForSql := (p - 1) * 5
+	l, _ := strconv.Atoi(limit)
+	get, err := db.Query(fmt.Sprintf("Select * from `instances` order by instance_id LIMIT %d OFFSET %d", l, pageForSql))
 	other.CheckErr(err)
 
 	for get.Next() {

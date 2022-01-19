@@ -8,16 +8,15 @@ import (
 )
 
 type Book struct {
-	BookId       uint16 `json:"book_id" valid:"required,numeric"`
-	BookName     string `json:"book_name" valid:"required"`
-	GenreId      uint16 `json:"genre_id"`
-	BookGenre    string `json:"book_genre"`
-	Year         uint16 `json:"year" valid:"numeric"`
-	Quantity     uint16 `json:"quantity" valid:"required,numeric"`
-	Available    uint16 `json:"available" valid:"required,numeric"`
-	Registration string `json:"registration" valid:"required"`
-	Price        uint16 `json:"book_price" valid:"required,numeric"`
-	ImagePath    string `json:"image_path" valid:"required,url"`
+	BookId       uint16  `json:"book_id" valid:"required,numeric"`
+	BookName     string  `json:"book_name" valid:"required"`
+	Genre        []Genre `json:"genre"`
+	Year         uint16  `json:"year" valid:"numeric"`
+	Quantity     uint16  `json:"quantity" valid:"required,numeric"`
+	Available    uint16  `json:"available" valid:"required,numeric"`
+	Registration string  `json:"registration" valid:"required"`
+	Price        uint16  `json:"book_price" valid:"required,numeric"`
+	ImagePath    string  `json:"image_path" valid:"required,url"`
 }
 
 type BookGenre struct {
@@ -31,10 +30,9 @@ type BookAuthor struct {
 }
 
 type BooksWithAuthors struct {
-	BookId     uint16 `json:"book_id"`
-	BookName   string `json:"book_name"`
-	AuthorId   uint16 `json:"author_id"`
-	AuthorName string `json:"author_name"`
+	BookId   uint16   `json:"book_id"`
+	BookName string   `json:"book_name"`
+	Authors  []Author `json:"authors"`
 }
 
 func SaveBookInDB(book Book) {
@@ -99,44 +97,86 @@ func GetBooksFromDB(Books *[]Book) {
 	}
 }
 
-func GetBooksFromDBWithPages(Books *[]Book, page string) {
+func GetBooksFromDBWithPages(Books *[]Book, page string, limit string) {
+
 	db := other.ConnectDB()
 	defer db.Close()
 	p, _ := strconv.Atoi(page)
-	get, err := db.Query(fmt.Sprintf("Select * from `books` LEFT JOIN `book_genre` ON books.book_id = book_genre.book_id LEFT JOIN `genres` ON book_genre.genre_id = genres.genre_id LIMIT 5 OFFSET %d ", (p-1)*5))
+	l, _ := strconv.Atoi(limit)
+	pageForSql := (p - 1) * 5
+
+	get, err := db.Query(fmt.Sprintf("Select * from `books` LIMIT %d OFFSET %d ", l, pageForSql))
 
 	other.CheckErr(err)
 
 	for get.Next() {
-		var genre Genre
 		var book Book
-		err = get.Scan(&book.BookId, &book.BookName, &book.Year, &book.Quantity, &book.Available, &book.Registration, &book.Price, &book.ImagePath, &book.BookGenre, &book.GenreId, &genre.GenreId, &genre.GenreName)
-		book.GenreId = genre.GenreId
-		book.BookGenre = genre.GenreName
+		err = get.Scan(&book.BookId, &book.BookName, &book.Year, &book.Quantity, &book.Available, &book.Registration, &book.Price, &book.ImagePath)
+		book.Genre = SelectGenres(book.BookId)
+
 		other.CheckErr(err)
 		*Books = append(*Books, book)
 	}
 }
 
-func GetBooksWithAuthorsFromDBWithPages(Books *[]BooksWithAuthors, page string) {
+func GetBooksWithAuthorsFromDBWithPages(Books *[]BooksWithAuthors, page string, limit string) {
+	var books []Book
 	db := other.ConnectDB()
 	defer db.Close()
 	p, _ := strconv.Atoi(page)
-	get, err := db.Query(fmt.Sprintf("Select * from `books` LEFT JOIN `book_authors` ON books.book_id = book_authors.book_id LEFT JOIN `authors` ON book_authors.author_id = authors.author_id LIMIT 5 OFFSET %d ", (p-1)*5))
+	l, _ := strconv.Atoi(limit)
+	pageForSql := (p - 1) * 5
 
+	getB, errB := db.Query("Select book_id,book_name from `books`")
+	other.CheckErr(errB)
+
+	for getB.Next() {
+		var book Book
+		getB.Scan(&book.BookId, &book.BookName)
+		books = append(books, book)
+	}
+
+	get, err := db.Query(fmt.Sprintf("Select books.book_id, books.book_name from `books` LIMIT %d OFFSET %d ", l, pageForSql))
 	other.CheckErr(err)
-
 	for get.Next() {
 		var book Book
-		var author Author
 		var bookAuthors BooksWithAuthors
-		err = get.Scan(&book.BookId, &book.BookName, &book.Year, &book.Quantity, &book.Available, &book.Registration, &book.Price, &book.ImagePath, &book.BookGenre, &book.GenreId, &author.AuthorId, &author.AuthorName, &author.AuthorImage)
+		err = get.Scan(&book.BookId, &book.BookName)
 		bookAuthors.BookId = book.BookId
 		bookAuthors.BookName = book.BookName
-		bookAuthors.AuthorId = author.AuthorId
-		bookAuthors.AuthorName = author.AuthorName
 		other.CheckErr(err)
+		bookAuthors.Authors = SelectAuthors(book.BookId)
 		*Books = append(*Books, bookAuthors)
 	}
 
+}
+
+func SelectAuthors(id uint16) []Author {
+	var authors []Author
+	db := other.ConnectDB()
+	defer db.Close()
+
+	get, err := db.Query(fmt.Sprintf("SELECT authors.author_id, author_name, author_image FROM authors JOIN book_authors ON authors.author_id = book_authors.author_id AND book_authors.book_id = %d", id))
+	other.CheckErr(err)
+	for get.Next() {
+		var author Author
+		err = get.Scan(&author.AuthorId, &author.AuthorName, &author.AuthorImage)
+		authors = append(authors, author)
+	}
+	return authors
+}
+
+func SelectGenres(id uint16) []Genre {
+	var genres []Genre
+	db := other.ConnectDB()
+	defer db.Close()
+
+	get, err := db.Query(fmt.Sprintf("SELECT genres.genre_id, book_genre FROM genres JOIN book_genre ON genres.genre_id = book_genre.genre_id AND book_genre.book_id = %d", id))
+	other.CheckErr(err)
+	for get.Next() {
+		var genre Genre
+		err = get.Scan(&genre.GenreId, &genre.GenreName)
+		genres = append(genres, genre)
+	}
+	return genres
 }

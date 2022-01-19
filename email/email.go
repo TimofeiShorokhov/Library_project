@@ -73,3 +73,47 @@ func CheckForSend() {
 
 	}
 }
+
+func FirstCheck() {
+	var documents []repo.Document
+	for _, i := range model.GetDocuments(documents) {
+		t1 := i.Date
+		dt1, _ := time.Parse("2006-01-02", t1)
+		t2 := time.Now()
+		if t2.After(dt1) {
+			CheckForSend()
+		}
+	}
+}
+
+func CheckDebt() bool {
+	var documents []repo.Document
+	if len(model.GetDocuments(documents)) == 0 {
+		return false
+	}
+	for _, h := range model.GetDocuments(documents) {
+		t1 := h.Date
+		dt1, _ := time.Parse("2006-01-02", t1)
+		t2 := time.Now()
+		if t2.After(dt1) {
+			return true
+		}
+	}
+	return false
+}
+
+func TickerForEmail() {
+	ticker := time.NewTicker(30 * time.Minute)
+	go func() {
+		if true {
+			for range ticker.C {
+				if CheckDebt() == true {
+					CheckForSend()
+					fmt.Println("Email sent...")
+				} else {
+					fmt.Println("No debt")
+				}
+			}
+		}
+	}()
+}
