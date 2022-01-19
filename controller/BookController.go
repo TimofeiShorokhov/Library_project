@@ -5,7 +5,9 @@ import (
 	"Library_project/other"
 	"Library_project/repo"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 )
@@ -37,23 +39,47 @@ func GetBooksController(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	other.CheckErr(err)
 	page := r.URL.Query().Get("page")
+	limit := r.URL.Query().Get("limit")
 	err = json.Unmarshal(body, page)
 	if page == "" {
 		page = "1"
 	}
-	Books = model.GetBooksWithPage(Books, page)
+	if limit == "" {
+		limit = "1"
+	}
+	Books = model.GetBooksWithPage(Books, page, limit)
 	json.NewEncoder(w).Encode(Books)
 }
 
 func GetBooksWithAuthorsController(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
-	other.CheckErr(err)
+	if err != nil {
+		log.Printf("Body read error, %v", err)
+		w.WriteHeader(500)
+		return
+	}
 	page := r.URL.Query().Get("page")
+	limit := r.URL.Query().Get("limit")
 	err = json.Unmarshal(body, page)
 	if page == "" {
 		page = "1"
 	}
-	BooksW := model.GetBooksWithAuthorsWithPage(BooksW, page)
+	if limit == "" {
+		limit = "1"
+	}
+	BooksW = model.GetBooksWithAuthorsWithPage(BooksW, page, limit)
 	json.NewEncoder(w).Encode(BooksW)
+}
+
+func RenderFileController(w http.ResponseWriter, r *http.Request) {
+
+	image := r.URL.Query().Get("image")
+	filename := fmt.Sprintf("D:/img/%s.jpg", image)
+	file, err := ioutil.ReadFile(filename)
+	if err != nil {
+		fmt.Println("Can't open file: " + filename)
+	} else {
+		w.Write(file)
+	}
 }

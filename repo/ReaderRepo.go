@@ -67,11 +67,13 @@ func GetReaderFromDB(Readers *[]Reader) {
 	}
 }
 
-func GetReaderFromDBWithPages(Readers *[]Reader, page string) {
+func GetReaderFromDBWithPages(Readers *[]Reader, page string, limit string) {
 	db := other.ConnectDB()
 	defer db.Close()
 	p, _ := strconv.Atoi(page)
-	get, err := db.Query(fmt.Sprintf("Select * from `readers` order by name LIMIT 5 OFFSET %d", (p-1)*5))
+	l, _ := strconv.Atoi(limit)
+	pageForSql := (p - 1) * 5
+	get, err := db.Query(fmt.Sprintf("Select * from `readers` order by name LIMIT %d OFFSET %d", l, pageForSql))
 	other.CheckErr(err)
 
 	for get.Next() {

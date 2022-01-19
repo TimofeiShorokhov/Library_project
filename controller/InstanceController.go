@@ -16,11 +16,15 @@ func GetInstancesController(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	other.CheckErr(err)
 	page := r.URL.Query().Get("page")
+	limit := r.URL.Query().Get("limit")
 	err = json.Unmarshal(body, page)
 	if page == "" {
 		page = "1"
 	}
+	if limit == "" {
+		limit = "1"
+	}
 
-	Instances = model.GetInstancesWithPage(Instances, page)
+	Instances = model.GetInstancesWithPage(Instances, page, limit)
 	json.NewEncoder(w).Encode(Instances)
 }

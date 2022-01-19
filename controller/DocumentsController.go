@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"Library_project/email"
 	"Library_project/model"
 	"Library_project/other"
 	"Library_project/repo"
@@ -34,7 +33,7 @@ func SaveDocumentController(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteDocumentController(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
 	other.CheckErr(err)
 
@@ -58,7 +57,7 @@ func DeleteDocumentController(w http.ResponseWriter, r *http.Request) {
 			if t2.After(dt1) {
 				days := (t2.Sub(dt1).Hours()) / 24
 				penny = int(instance.FinalPrice * (0.01) * (days))
-				instance.FinalPrice = float64(penny)
+				instance.FinalPrice = float64(penny) + instance.FinalPrice
 				json.NewEncoder(w).Encode(instance)
 			} else if t2.Before(dt1) {
 				json.NewEncoder(w).Encode(instance)
@@ -74,6 +73,14 @@ func GetDocumentsController(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(Documents)
 }
 
-func CheckDebtController(w http.ResponseWriter, r *http.Request) {
-	email.CheckForSend()
+func SearchDocumentController(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	Documents = model.GetDocuments(Documents)
+	for _, item := range Documents {
+		if item.ReaderSurname == params["surname"] {
+			json.NewEncoder(w).Encode(item)
+			return
+		}
+	}
 }

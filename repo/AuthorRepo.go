@@ -3,6 +3,7 @@ package repo
 import (
 	"Library_project/other"
 	"fmt"
+	"strconv"
 )
 
 type Author struct {
@@ -11,11 +12,13 @@ type Author struct {
 	AuthorImage string `json:"author_image" valid:"required"`
 }
 
-func GetAuthorsFromDB(Authors *[]Author) {
+func GetAuthorsFromDB(Authors *[]Author, page string, limit string) {
 	db := other.ConnectDB()
 	defer db.Close()
-
-	get, err := db.Query("Select * from `authors`")
+	p, _ := strconv.Atoi(page)
+	pageForSql := (p - 1) * 5
+	l, _ := strconv.Atoi(limit)
+	get, err := db.Query(fmt.Sprintf("Select * from `authors` LIMIT %d OFFSET %d", l, pageForSql))
 	other.CheckErr(err)
 
 	for get.Next() {

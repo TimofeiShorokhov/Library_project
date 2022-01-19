@@ -8,8 +8,8 @@ func GetInstances(Instances []repo.Instance) []repo.Instance {
 	return Instances
 }
 
-func GetInstancesWithPage(Instances []repo.Instance, page string) []repo.Instance {
+func GetInstancesWithPage(Instances []repo.Instance, page string, limit string) []repo.Instance {
 	Instances = []repo.Instance{}
-	repo.GetInstancesFromDBWithPage(&Instances, page)
+	repo.GetInstancesFromDBWithPage(&Instances, page, limit)
 	return Instances
 }
