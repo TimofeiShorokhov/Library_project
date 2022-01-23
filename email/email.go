@@ -51,37 +51,26 @@ func CheckForSend() {
 		t1 := i.Date
 		dt1, _ := time.Parse("2006-01-02", t1)
 		t2 := time.Now()
-
-		for _, c := range model.GetReaders(readers) {
-
-			if i.ReaderSurname == c.Surname {
-				mes1 = "Вам необходимо вернуть книгу: " + i.BookName + ". Если не вернете в течении 5 дней с момента окончания срока возврата, то будет выставлен штраф"
-
-				if (t2.Sub(dt1).Hours())/24 <= 6 {
-					SendEmail(c.Email, mes1)
-				} else if (t2.Sub(dt1).Hours())/24 > 6 {
-					days := (t2.Sub(dt1).Hours()) / 24
-					fine := float64(i.Price) * (0.01) * (days)
-					fineInString := strconv.Itoa(int(fine))
-					daysInString := strconv.Itoa(int(days))
-					mes2 = "Вы просрочили сдачу, прошло уже " + daysInString + " дней, сумма штрафа:" + fineInString
-					SendEmail(c.Email, mes2)
-				}
-
-			}
-		}
-
-	}
-}
-
-func FirstCheck() {
-	var documents []repo.Document
-	for _, i := range model.GetDocuments(documents) {
-		t1 := i.Date
-		dt1, _ := time.Parse("2006-01-02", t1)
-		t2 := time.Now()
 		if t2.After(dt1) {
-			CheckForSend()
+			for _, c := range model.GetReaders(readers) {
+
+				if i.ReaderSurname == c.Surname {
+					mes1 = "Вам необходимо вернуть книгу: " + i.BookName + ". Если не вернете в течении 5 дней с момента окончания срока возврата, то будет выставлен штраф"
+
+					if (t2.Sub(dt1).Hours())/24 <= 6 {
+						SendEmail(c.Email, mes1)
+					} else if (t2.Sub(dt1).Hours())/24 > 6 {
+						days := (t2.Sub(dt1).Hours()) / 24
+						fine := float64(i.Price) * (0.01) * (days)
+						fineInString := strconv.Itoa(int(fine))
+						daysInString := strconv.Itoa(int(days))
+						mes2 = "Вы просрочили сдачу, прошло уже " + daysInString + " дней, сумма штрафа:" + fineInString
+						SendEmail(c.Email, mes2)
+					}
+
+				}
+			}
+
 		}
 	}
 }

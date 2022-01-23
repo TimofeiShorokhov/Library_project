@@ -16,8 +16,9 @@ func GetAuthorsFromDB(Authors *[]Author, page string, limit string) {
 	db := other.ConnectDB()
 	defer db.Close()
 	p, _ := strconv.Atoi(page)
-	pageForSql := (p - 1) * 5
+
 	l, _ := strconv.Atoi(limit)
+	pageForSql := (p - 1) * l
 	get, err := db.Query(fmt.Sprintf("Select * from `authors` LIMIT %d OFFSET %d", l, pageForSql))
 	other.CheckErr(err)
 

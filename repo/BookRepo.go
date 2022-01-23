@@ -120,21 +120,12 @@ func GetBooksFromDBWithPages(Books *[]Book, page string, limit string) {
 }
 
 func GetBooksWithAuthorsFromDBWithPages(Books *[]BooksWithAuthors, page string, limit string) {
-	var books []Book
+
 	db := other.ConnectDB()
 	defer db.Close()
 	p, _ := strconv.Atoi(page)
 	l, _ := strconv.Atoi(limit)
-	pageForSql := (p - 1) * 5
-
-	getB, errB := db.Query("Select book_id,book_name from `books`")
-	other.CheckErr(errB)
-
-	for getB.Next() {
-		var book Book
-		getB.Scan(&book.BookId, &book.BookName)
-		books = append(books, book)
-	}
+	pageForSql := (p - 1) * l
 
 	get, err := db.Query(fmt.Sprintf("Select books.book_id, books.book_name from `books` LIMIT %d OFFSET %d ", l, pageForSql))
 	other.CheckErr(err)
@@ -172,6 +163,7 @@ func SelectGenres(id uint16) []Genre {
 	defer db.Close()
 
 	get, err := db.Query(fmt.Sprintf("SELECT genres.genre_id, book_genre FROM genres JOIN book_genre ON genres.genre_id = book_genre.genre_id AND book_genre.book_id = %d", id))
+
 	other.CheckErr(err)
 	for get.Next() {
 		var genre Genre

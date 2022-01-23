@@ -78,9 +78,10 @@ func SearchDocumentController(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	Documents = model.GetDocuments(Documents)
 	for _, item := range Documents {
-		if item.ReaderSurname == params["surname"] {
+		if item.ReaderSurname != params["surname"] {
+			other.RespondWithJSON(w, 404, "Error")
+		} else if item.ReaderSurname == params["surname"] {
 			json.NewEncoder(w).Encode(item)
-			return
 		}
 	}
 }

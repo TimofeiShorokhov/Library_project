@@ -14,7 +14,10 @@ var Instances []repo.Instance
 func GetInstancesController(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
-	other.CheckErr(err)
+	if err != nil {
+		other.RespondWithJSON(w, 500, "Body read error")
+		return
+	}
 	page := r.URL.Query().Get("page")
 	limit := r.URL.Query().Get("limit")
 	err = json.Unmarshal(body, page)
