@@ -72,7 +72,7 @@ func GetReaderFromDBWithPages(Readers *[]Reader, page string, limit string) {
 	defer db.Close()
 	p, _ := strconv.Atoi(page)
 	l, _ := strconv.Atoi(limit)
-	pageForSql := (p - 1) * 5
+	pageForSql := (p - 1) * l
 	get, err := db.Query(fmt.Sprintf("Select * from `readers` order by name LIMIT %d OFFSET %d", l, pageForSql))
 	other.CheckErr(err)
 

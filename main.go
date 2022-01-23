@@ -8,7 +8,7 @@ import (
 
 func main() {
 	other.ConnectDB()
-	email.FirstCheck()
+	email.CheckForSend()
 	go email.TickerForEmail()
 	routers.Routers()
 }

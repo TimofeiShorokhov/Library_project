@@ -44,10 +44,9 @@ func RenderAuthorFileController(w http.ResponseWriter, r *http.Request) {
 
 	image := r.URL.Query().Get("image")
 	filename := fmt.Sprintf("D:/authors/%s.jpg", image)
-	fmt.Println("Read request: " + filename)
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
-		fmt.Println("Cann't open file: " + filename)
+		other.RespondWithJSON(w, 404, "File not found")
 	} else {
 		w.Write(file)
 	}

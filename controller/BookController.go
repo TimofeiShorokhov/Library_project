@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 )
@@ -17,7 +16,10 @@ var BooksW []repo.BooksWithAuthors
 
 func SaveBookController(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
-	other.CheckErr(err)
+	if err != nil {
+		other.RespondWithJSON(w, 500, "Body read error")
+		return
+	}
 
 	var bookForRest model.BookForRest
 	var book repo.Book
@@ -26,7 +28,10 @@ func SaveBookController(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(body, &bookForRest)
 
-	other.CheckErr(err)
+	if err != nil {
+		other.RespondWithJSON(w, 400, "Bad request")
+		return
+	}
 
 	registration := time.Now().Format("2006-01-02")
 	bookForRest.Registration = registration
@@ -37,7 +42,10 @@ func GetBooksController(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	Books = model.GetBooks(Books)
 	body, err := ioutil.ReadAll(r.Body)
-	other.CheckErr(err)
+	if err != nil {
+		other.RespondWithJSON(w, 500, "Body read error")
+		return
+	}
 	page := r.URL.Query().Get("page")
 	limit := r.URL.Query().Get("limit")
 	err = json.Unmarshal(body, page)
@@ -55,8 +63,7 @@ func GetBooksWithAuthorsController(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Body read error, %v", err)
-		w.WriteHeader(500)
+		other.RespondWithJSON(w, 500, "Body read error")
 		return
 	}
 	page := r.URL.Query().Get("page")
@@ -73,12 +80,11 @@ func GetBooksWithAuthorsController(w http.ResponseWriter, r *http.Request) {
 }
 
 func RenderFileController(w http.ResponseWriter, r *http.Request) {
-
 	image := r.URL.Query().Get("image")
 	filename := fmt.Sprintf("D:/img/%s.jpg", image)
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
-		fmt.Println("Can't open file: " + filename)
+		other.RespondWithJSON(w, 404, "Image not found")
 	} else {
 		w.Write(file)
 	}
