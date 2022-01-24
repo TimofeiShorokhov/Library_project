@@ -2,21 +2,48 @@ package routers
 
 import (
 	"Library_project/controller"
-	"Library_project/repo"
+	"Library_project/other"
 	"github.com/gorilla/mux"
 	"net/http"
+	"os"
 )
 
 func Routers() {
 	r := mux.NewRouter()
-	repo.ConnectDB()
 
-	http.Handle("/images/book_img", http.StripPrefix("/images/", http.FileServer(http.Dir("images"))))
+	err := os.Setenv("PORT", ":8080")
+	other.CheckErr(err)
+
+	port := os.Getenv("PORT")
+
+	http.Handle("/book_img/", http.StripPrefix("/book_img/", http.FileServer(http.Dir("./book_img"))))
 	http.Handle("/images/author_img/", http.StripPrefix("/authorImage/", http.FileServer(http.Dir("authorImage"))))
 
 	r.HandleFunc("/books/", controller.SaveBookController).Methods("POST")
 	r.HandleFunc("/books", controller.GetBooksController).Methods("GET")
+	r.HandleFunc("/booksW", controller.GetBooksWithAuthorsController).Methods("GET")
+
+	r.HandleFunc("/readers/", controller.SaveReaderController).Methods("POST")
+	r.HandleFunc("/readers", controller.GetReadersController).Methods("GET")
+	r.HandleFunc("/search_reader/{name}", controller.SearchReaderController).Methods("GET")
+
+	r.HandleFunc("/documents", controller.GetDocumentsController).Methods("GET")
+	r.HandleFunc("/documents/{surname}", controller.SearchDocumentController).Methods("GET")
+
+	r.HandleFunc("/take/", controller.SaveDocumentController).Methods("POST")
+
+	r.HandleFunc("/refund_book/{instance_id}", controller.DeleteDocumentController).Methods("POST")
+
+	r.HandleFunc("/authors/", controller.SaveAuthorController).Methods("POST")
+	r.HandleFunc("/authors", controller.GetAuthorsController).Methods("GET")
+
+	r.HandleFunc("/instances", controller.GetInstancesController).Methods("GET")
+
+	r.HandleFunc("/image", controller.RenderFileController).Methods("GET")
+
+	r.HandleFunc("/authors_image", controller.RenderAuthorFileController).Methods("GET")
 
 	http.Handle("/", r)
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe(port, r)
+
 }

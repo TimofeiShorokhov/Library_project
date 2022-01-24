@@ -1,7 +1,14 @@
 package main
 
-import "Library_project/routers"
+import (
+	"Library_project/email"
+	"Library_project/other"
+	"Library_project/routers"
+)
 
-func main(){
+func main() {
+	other.ConnectDB()
+	email.CheckForSend()
+	go email.TickerForEmail()
 	routers.Routers()
 }
